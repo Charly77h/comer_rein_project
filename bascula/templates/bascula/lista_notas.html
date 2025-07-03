@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comer_Rein25 - Notas de Entrada</title>
+</head>
+<body>
+    <!-- AÑADE ESTA LÍNEA -->
+<a href="{% url 'crear_nota' %}">Crear Nueva Nota de Entrada</a>
+<a href="{% url 'reporte_inventario' %}">Ver Reporte de Inventario</a> <!-- ESTE ES EL NUEVO ENLACE -->
+<hr>
+
+<!-- ... el resto del archivo se queda igual ... -->
+    <h1>Listado de Notas de Entrada</h1>
+    
+
+   <ul>
+    {% for nota in notas_list %}
+        <li>
+            <a href="{% url 'detalle_nota' nota.folio %}">  <!-- ESTA ES LA LÍNEA MODIFICADA -->
+                <strong>Nota #{{ nota.folio }}</strong> del {{ nota.fecha|date:"d/m/Y" }} - 
+                Proveedor: {{ nota.proveedor.nombre }} - 
+                Estado: {{ nota.estado }}
+            </a>  <!-- Y ESTA CIERRA EL ENLACE -->
+        </li>
+    {% empty %}
+        <li>No hay notas registradas todavía.</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

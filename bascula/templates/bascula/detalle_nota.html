@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalle de Nota #{{ nota.folio }}</title>
+    <style>
+        body { font-family: sans-serif; }
+        .forms-container { display: flex; gap: 40px; }
+        .form-section { border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+        hr { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    
+    <h1>Detalle de Nota #{{ nota.folio }}</h1>
+
+<!-- AÑADE ESTE FORMULARIO/BOTÓN -->
+{% if nota.estado == 'PENDIENTE' %}
+    <form action="" method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="accion" value="finalizar_nota">
+        <button type="submit">Marcar como FINALIZADA</button>
+    </form>
+{% endif %}
+
+
+<!-- ... resto de la plantilla ... -->
+    <p><strong>Proveedor:</strong> {{ nota.proveedor.nombre }}</p>
+    <p><strong>Placas:</strong> {{ nota.placas_camion }}</p>
+    <p><strong>Estado:</strong> {{ nota.estado }}</p>
+
+    <hr>
+
+    <div class="forms-container">
+        <!-- FORMULARIO PARA AÑADIR MATERIAL ORIGINAL -->
+        <div class="form-section">
+            <h3>Añadir Material Original</h3>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="anadir_material">
+                <p>
+                    <label for="material_original">Material:</label>
+                    <select name="material" id="material_original" required>
+                        {% for mat in materiales %}<option value="{{ mat.id }}">{{ mat.nombre }}</option>{% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <label for="kilos_original">Kilos:</label>
+                    <input type="number" name="kilos" id="kilos_original" required>
+                </p>
+                <button type="submit">Añadir Material</button>
+            </form>
+        </div>
+
+        <!-- FORMULARIO PARA AÑADIR REBAJE -->
+        {% if nota.lineas.all %}
+        <div class="form-section">
+            <h3>Registrar Rebaje</h3>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="anadir_rebaje">
+                <p>
+                    <label for="linea_padre">Rebajar de:</label>
+                    <select name="linea_padre" id="linea_padre" required>
+                        {% for linea in nota.lineas.all %}
+                        <option value="{{ linea.id }}">{{ linea }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <label for="material_rebaje">Convertir en:</label>
+                    <select name="material" id="material_rebaje" required>
+                        {% for mat in materiales %}<option value="{{ mat.id }}">{{ mat.nombre }}</option>{% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <label for="kilos_rebaje">Kilos:</label>
+                    <input type="number" name="kilos" id="kilos_rebaje" required>
+                </p>
+                <button type="submit">Registrar Rebaje</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <h2>Resumen de Pesos Netos</h2>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Material</th>
+                <th>Kilos Netos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material, kilos in pesos_netos %}
+                <tr>
+                    <td>{{ material }}</td>
+                    <td>{{ kilos }} kg</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Esta nota aún no tiene materiales registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <a href="{% url 'lista_notas' %}">Volver a la lista</a>
+</body>
+</html>

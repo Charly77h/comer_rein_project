@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Nueva Nota</title>
+</head>
+<body>
+    <h1>Crear Nueva Nota de Entrada</h1>
+
+    <!-- El 'action' vacío envía los datos a la misma URL, y 'method="post"' es crucial -->
+    <form action="" method="post">
+        {% csrf_token %} <!-- Medida de seguridad OBLIGATORIA en formularios Django -->
+
+        <p>
+            <label for="proveedor">Proveedor:</label>
+            <select name="proveedor" id="proveedor">
+                {% for p in proveedores %}
+                    <option value="{{ p.id }}">{{ p.nombre }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="placas">Placas del Camión:</label>
+            <input type="text" name="placas_camion" id="placas">
+        </p>
+        
+        <button type="submit">Iniciar Nota</button>
+    </form>
+
+    <br>
+    <a href="{% url 'lista_notas' %}">Cancelar y volver a la lista</a>
+
+</body>
+</html>

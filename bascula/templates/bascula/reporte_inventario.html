@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reporte de Inventario</title>
+    <style> body { font-family: sans-serif; } </style>
+</head>
+<body>
+    <h1>Reporte de Inventario Actual</h1>
+    <p>(Solo se consideran notas en estado "FINALIZADA")</p>
+
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Material</th>
+                <th>Stock Actual (Kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material, stock in inventario %}
+                <tr>
+                    <td>{{ material }}</td>
+                    <td>{{ stock }} kg</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No hay stock registrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <a href="{% url 'lista_notas' %}">Volver a la lista de Notas</a>
+</body>
+</html>
